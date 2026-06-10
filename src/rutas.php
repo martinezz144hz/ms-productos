@@ -11,22 +11,18 @@ $authMiddleware      = new AuthMiddleware();
 
 // rutas de los productos
 
-//  listar todos los productos
 $app->get('/productos', function (Request $request, Response $response) use ($productoControlador) {
     return $productoControlador->listar($request, $response);
 })->add($authMiddleware);
 
-//  crear producto
 $app->post('/productos', function (Request $request, Response $response) use ($productoControlador) {
     return $productoControlador->crear($request, $response);
 })->add($authMiddleware);
 
-//  editar producto
 $app->put('/productos/{id}', function (Request $request, Response $response, array $args) use ($productoControlador) {
     return $productoControlador->editar($request, $response, $args);
 })->add($authMiddleware);
 
-//  eliminar producto
 $app->delete('/productos/{id}', function (Request $request, Response $response, array $args) use ($productoControlador) {
     return $productoControlador->eliminar($request, $response, $args);
 })->add($authMiddleware);
