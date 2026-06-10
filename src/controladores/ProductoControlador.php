@@ -7,18 +7,16 @@ require __DIR__ . '/../modelos/Producto.php';
 
 class ProductoControlador {
 
-    // ============================================
-    // LISTAR PRODUCTOS
-    // ============================================
+     //enlistar los productos
+   
     public function listar(Request $request, Response $response): Response {
         $productos = Producto::all();
 
         return $this->respuesta($response, $productos->toArray(), 200);
     }
 
-    // ============================================
-    // CREAR PRODUCTO
-    // ============================================
+    //crear un producto
+    
     public function crear(Request $request, Response $response): Response {
         $datos = $request->getParsedBody();
 
@@ -48,9 +46,8 @@ class ProductoControlador {
         ], 201);
     }
 
-    // ============================================
-    // EDITAR PRODUCTO
-    // ============================================
+    // editar el producto
+
     public function editar(Request $request, Response $response, array $args): Response {
         $id    = $args['id'];
         $datos = $request->getParsedBody();
@@ -76,9 +73,8 @@ class ProductoControlador {
         ], 200);
     }
 
-    // ============================================
-    // ELIMINAR PRODUCTO
-    // ============================================
+   //eliminar producto
+
     public function eliminar(Request $request, Response $response, array $args): Response {
         $id       = $args['id'];
         $producto = Producto::find($id);
@@ -96,9 +92,8 @@ class ProductoControlador {
         ], 200);
     }
 
-    // ============================================
-    // HELPER — respuesta JSON
-    // ============================================
+   // respuesta de json
+
     private function respuesta(Response $response, array $datos, int $codigo): Response {
         $response->getBody()->write(json_encode($datos));
         return $response

@@ -5,10 +5,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class AuthMiddleware {
+//validar token con ms auth
 
-    // ============================================
-    // VALIDAR TOKEN CONSULTANDO MS-AUTH
-    // ============================================
     public function __invoke(Request $request, RequestHandler $handler): Response {
         $token = $request->getHeaderLine('Authorization');
 
@@ -33,13 +31,12 @@ class AuthMiddleware {
             return $this->respuesta(401, ['message' => 'Token inválido o expirado.']);
         }
 
-        // Token válido, continuar con la petición
+        // se valido el token
         return $handler->handle($request);
     }
 
-    // ============================================
-    // HELPER — respuesta JSON
-    // ============================================
+    //respuesta de json
+    
     private function respuesta(int $codigo, array $datos): Response {
         $factory  = new Slim\Psr7\Factory\ResponseFactory();
         $response = $factory->createResponse($codigo);

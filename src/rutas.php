@@ -9,26 +9,34 @@ require __DIR__ . '/middleware/AuthMiddleware.php';
 $productoControlador = new ProductoControlador();
 $authMiddleware      = new AuthMiddleware();
 
-// ============================================
-// RUTAS DE PRODUCTOS
-// ============================================
+// rutas de los productos
 
-// GET /productos — listar todos los productos
+//  listar todos los productos
 $app->get('/productos', function (Request $request, Response $response) use ($productoControlador) {
     return $productoControlador->listar($request, $response);
 })->add($authMiddleware);
 
-// POST /productos — crear producto
+//  crear producto
 $app->post('/productos', function (Request $request, Response $response) use ($productoControlador) {
     return $productoControlador->crear($request, $response);
 })->add($authMiddleware);
 
-// PUT /productos/{id} — editar producto
+//  editar producto
 $app->put('/productos/{id}', function (Request $request, Response $response, array $args) use ($productoControlador) {
     return $productoControlador->editar($request, $response, $args);
 })->add($authMiddleware);
 
-// DELETE /productos/{id} — eliminar producto
+//  eliminar producto
 $app->delete('/productos/{id}', function (Request $request, Response $response, array $args) use ($productoControlador) {
     return $productoControlador->eliminar($request, $response, $args);
 })->add($authMiddleware);
+
+//endopint verificar que el servicio este activo
+$app->get('/', function (Request $request, Response $response) {
+    $response->getBody()->write(json_encode([
+        'servicio' => 'ms-productos',
+        'estado'   => 'activo',
+        'puerto'   => 3030
+    ]));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+});

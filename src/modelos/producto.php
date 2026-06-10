@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model {
 
-    // Nombre de la tabla en la BD
+    // Nombre de la tabla en la base
     protected $table = 'productos';
 
     // Campos que se pueden llenar masivamente
