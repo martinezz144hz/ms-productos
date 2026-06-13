@@ -5,7 +5,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class AuthMiddleware {
-//validar token con ms auth
 
     public function __invoke(Request $request, RequestHandler $handler): Response {
         $token = $request->getHeaderLine('Authorization');
@@ -14,29 +13,34 @@ class AuthMiddleware {
             return $this->respuesta(401, ['message' => 'Token no proporcionado.']);
         }
 
-        // Consultar ms-auth para validar el token
-        $url = 'http://127.0.0.1:3010/validate';
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            'Authorization: ' . $token
+        $url     = 'http://127.0.0.1:3010/validate';
+        $context = stream_context_create([
+            'http' => [
+                'method'        => 'GET',
+                'header'        => 'Authorization: ' . $token . "\r\n",
+                'timeout'       => 5,
+                'ignore_errors' => true,
+            ]
         ]);
 
-        $respuesta  = curl_exec($curl);
-        $httpCode   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $resultado = file_get_contents($url, false, $context);
+        $httpCode  = 401;
+
+        if (isset($http_response_header)) {
+            foreach ($http_response_header as $header) {
+                if (preg_match('/HTTP\/\d\.\d\s+(\d+)/', $header, $matches)) {
+                    $httpCode = (int)$matches[1];
+                }
+            }
+        }
 
         if ($httpCode !== 200) {
             return $this->respuesta(401, ['message' => 'Token inválido o expirado.']);
         }
 
-        // se valido el token
         return $handler->handle($request);
     }
 
-    //respuesta de json
-    
     private function respuesta(int $codigo, array $datos): Response {
         $factory  = new Slim\Psr7\Factory\ResponseFactory();
         $response = $factory->createResponse($codigo);
@@ -45,3 +49,4 @@ class AuthMiddleware {
     }
 }
 
+//brrrrr
